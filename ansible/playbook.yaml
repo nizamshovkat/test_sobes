@@ -1,0 +1,24 @@
+---
+- name: Deploy web application
+  hosts: web
+  become: yes
+  tasks:
+    - name: Copy docker-compose.yml
+      copy:
+        src: /home/shovkat/Desktop/test_sobes/ansible/roles/web_app/files/docker-compose.yaml
+        dest: /home/server/docker-compose.yml
+
+    - name: Copy Dockerfile
+      copy:
+        src: /home/shovkat/Desktop/test_sobes/Dockerfile
+        dest: /home/server/Dockerfile
+
+    - name: Copy Nginx configuration file
+      template:
+        src: roles/web_app/templates/nginx.conf.j2
+        dest: /etc/nginx/conf.d/default.conf
+
+    - name: Start Docker containers
+      docker_compose:
+        project_src: /home/server
+        restarted: yes
